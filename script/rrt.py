@@ -3,6 +3,10 @@ from hpp.corbaserver import ProblemSolver, Client
 from hpp.gepetto import ViewerFactory, PathPlayer
 Client ().problem.resetProblem ()
 
+import readline
+import rlcompleter
+readline.parse_and_bind("tab: complete")
+
 robot = Robot ('ur5')
 ps = ProblemSolver (robot)
 
