@@ -9,7 +9,7 @@ class MotionPlanner:
     length = self.ps.pathLength(new_path_id);
     q_new = self.ps.configAtParam(new_path_id, length);
     self.ps.addConfigToRoadmap(q_new);
-    self.ps.addEdgeToRoadmap(q_new, q_near, new_path_id, True);
+    self.ps.addEdgeToRoadmap(q_near, q_new, new_path_id, True);
     list.append(q_new);
 
   def connectNodes (self, config_list, new_config):
