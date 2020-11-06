@@ -63,7 +63,7 @@ ps.createTransformationConstraint ('gripper-above-ball', gripperName, ballName,
 ps.setConstantRightHandSide ('placementBallOnGround', True)
 ps.setConstantRightHandSide ('placementBallAboveGround', True)
 ps.setConstantRightHandSide ('placement/complement', False)
-ps.setConstantRightHandSide ('gripper-above-ball', False)
+ps.setConstantRightHandSide ('gripper-above-ball', True)
 
 ## Set constraints of nodes and edges
 graph.addConstraints (node='placement', constraints = \
@@ -83,19 +83,23 @@ graph.addConstraints (edge='approach-ball', constraints = \
                       Constraints (numConstraints = ['placement/complement']))
 graph.addConstraints (edge='move-gripper-away', constraints = \
                       Constraints (numConstraints = ['placement/complement']))
-
-#graph.addConstraints (edge='grasp-ball', constraints = \
-#                      Constraints (numConstraints = ['placement/complement']))
-
+graph.addConstraints (edge='grasp-ball', constraints = \
+                      Constraints (numConstraints = ['placement/complement']))
+graph.addConstraints (edge='move-gripper-up', constraints = \
+                      Constraints (numConstraints = ['placement/complement']))
+graph.addConstraints (edge='take-ball-up', constraints = \
+                      Constraints (numConstraints = ['placement/complement']))
+graph.addConstraints (edge='put-ball-down', constraints = \
+                      Constraints (numConstraints = ['placement/complement']))
 
 # These edges are in node 'grasp'
+#graph.addConstraints (edge='grasp-ball', constraints = Constraints ())
+#graph.addConstraints (edge='move-gripper-up', constraints = Constraints ())
 graph.addConstraints (edge='transfer',     constraints = Constraints ())
 graph.addConstraints (edge='move-gripper-up',     constraints = Constraints ())
-graph.addConstraints (edge='grasp-ball',     constraints = Constraints ())
-graph.addConstraints (edge='take-ball-up',     constraints = Constraints ())
-graph.addConstraints (edge='put-ball-down',     constraints = Constraints ())
+#graph.addConstraints (edge='take-ball-up',     constraints = Constraints ())
+#graph.addConstraints (edge='put-ball-down',     constraints = Constraints ())
 graph.addConstraints (edge='take-ball-away',     constraints = Constraints ())
-graph.addConstraints (edge='approach-ground',     constraints = Constraints ())
 
 #graph.addConstraints (edge='release-ball', constraints = Constraints ())
 ps.selectPathValidation ("Dichotomy", 0)
@@ -105,8 +109,7 @@ graph.initialize ()
 ## Project initial configuration on state 'placement'
 res, q_init, error = graph.applyNodeConstraints ('placement', q1)
 q2 = q1 [::]
-q2 [7] = .5
-q2 [6] = .7
+q2 [7] = .2
 
 ## Project goal configuration on state 'placement'
 res, q_goal, error = graph.applyNodeConstraints ('placement', q2)
