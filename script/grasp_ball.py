@@ -27,11 +27,20 @@ ps.createTransformationConstraint ('grasp', gripperName, ballName,
 #  Warning the order of the nodes is important. When checking in which node
 #  a configuration lies, node constraints will be checked in the order of node
 #  creation.
-graph.createNode (['grasp', 'placement'])
+graph.createNode (['grasp', 'placement', 'gripper-above-ball', 'grasp-placement', 'ball-above-ground'])
 graph.createEdge ('placement', 'placement', 'transit', 1, 'placement')
 graph.createEdge ('grasp', 'grasp', 'transfer', 1, 'grasp')
-graph.createEdge ('placement', 'grasp', 'grasp-ball', 1, 'placement')
-graph.createEdge ('grasp', 'placement', 'release-ball', 1, 'grasp')
+# graph.createEdge ('placement', 'grasp', 'grasp-ball', 1, 'placement')
+# graph.createEdge ('grasp', 'placement', 'release-ball', 1, 'grasp')
+
+graph.createEdge ('placement', 'gripper-above-ball', 'approach-ball', 1, 'placement')
+graph.createEdge ('gripper-above-ball', 'placement', 'move-gripper-away', 1, 'gripper-above-ball')
+graph.createEdge ('gripper-above-ball', 'grasp-placement', 'grasp-ball', 1, 'gripper-above-ball')
+graph.createEdge ('grasp-placement', 'gripper-above-ball', 'move-gripper-up', 1, 'grasp-placement')
+graph.createEdge ('grasp-placement', 'ball-above-ground', 'take-ball-up', 1, 'grasp-placement')
+graph.createEdge ('ball-above-ground', 'grasp-placement', 'put-ball-down', 1, 'ball-above-ground')
+graph.createEdge('ball-above-ground', 'grasp', 'take-ball-away', 1, 'ball-above-ground')
+graph.createEdge('grasp', 'ball-above-ground', 'approach-ground', 1, 'grasp')
 
 ## Create transformation constraint : ball is in horizontal plane with free
 ## rotation around z
@@ -57,7 +66,7 @@ graph.addConstraints (edge='grasp-ball', constraints = \
                       Constraints (numConstraints = ['placement/complement']))
 # These edges are in node 'grasp'
 graph.addConstraints (edge='transfer',     constraints = Constraints ())
-graph.addConstraints (edge='release-ball', constraints = Constraints ())
+#graph.addConstraints (edge='release-ball', constraints = Constraints ())
 ps.selectPathValidation ("Dichotomy", 0)
 ps.selectPathProjector ("Progressive", 0.1)
 graph.initialize ()
