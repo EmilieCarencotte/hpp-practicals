@@ -34,16 +34,16 @@ graph.createEdge ('grasp', 'grasp', 'transfer', 1, 'grasp')
 #graph.createEdge ('grasp', 'placement', 'release-ball', 1, 'grasp')
 
 graph.createEdge ('placement', 'gripper-above-ball', 'approach-ball', 1, 'placement')
-graph.createEdge ('gripper-above-ball', 'placement', 'move-gripper-away', 1, 'gripper-above-ball')
-graph.createEdge ('gripper-above-ball', 'grasp-placement', 'grasp-ball', 1, 'gripper-above-ball')
-graph.createEdge ('grasp-placement', 'gripper-above-ball', 'move-gripper-up', 1, 'grasp-placement')
-graph.createEdge ('grasp-placement', 'ball-above-ground', 'take-ball-up', 1, 'grasp-placement')
-graph.createEdge ('ball-above-ground', 'grasp-placement', 'put-ball-down', 1, 'ball-above-ground')
-graph.createEdge('ball-above-ground', 'grasp', 'take-ball-away', 1, 'ball-above-ground')
+graph.createEdge ('gripper-above-ball', 'placement', 'move-gripper-away', 1, 'placement')
+graph.createEdge ('gripper-above-ball', 'grasp-placement', 'grasp-ball', 1, 'placement')
+graph.createEdge ('grasp-placement', 'gripper-above-ball', 'move-gripper-up', 1, 'placement')
+graph.createEdge ('grasp-placement', 'ball-above-ground', 'take-ball-up', 1, 'grasp')
+graph.createEdge ('ball-above-ground', 'grasp-placement', 'put-ball-down', 1, 'grasp')
+graph.createEdge('ball-above-ground', 'grasp', 'take-ball-away', 1, 'grasp')
 graph.createEdge('grasp', 'ball-above-ground', 'approach-ground', 1, 'grasp')
 
 ## Create transformation constraint : ball is in horizontal plane with free
-## rotation around z
+# rotation around z
 ps.createTransformationConstraint ('placementBallOnGround', '', ballName,
                                    [0,0,0.025,0, 0, 0, 1],
                                    [False, False, True, True, True, False,])
@@ -58,7 +58,7 @@ ps.createTransformationConstraint ('placement/complement', '', ballName,
 ballUnderGripper = [0, .337, 0, 0.5, 0.5, -0.5, 0.5]
 ps.createTransformationConstraint ('gripper-above-ball', gripperName, ballName,
                                    ballUnderGripper,
-                                   [True, False, True, True, True, True])
+                                   [True, True, True, True, True, True])
 
 ps.setConstantRightHandSide ('placementBallOnGround', True)
 ps.setConstantRightHandSide ('placementBallAboveGround', True)
@@ -124,16 +124,34 @@ res, q_goal, error = graph.applyNodeConstraints ('placement', q2)
 ps.setInitialConfig (q_init)
 ps.addGoalConfig (q_goal)
 
-# v = vf.createViewer ()
+#v = vf.createViewer ()
 # pp = PathPlayer (v)
 # v (q1)
 
 ## Build relative position of the ball with respect to the gripper
 for i in range (100):
   q = robot.shootRandomConfig ()
-  res,q3,err = graph.generateTargetConfig ('grasp-ball', q_init, q)
-  if res and robot.isConfigValid (q3): break;
+  res1,q4,err = graph.generateTargetConfig ('approach-ball', q_init, q)
+  if res1 and robot.isConfigValid (q4): break;
 
+if res1:
+  for i in range (100):
+    q = robot.shootRandomConfig ()
+    res1,q3,err = graph.generateTargetConfig ('grasp-ball', q4, q)
+    if res1 and robot.isConfigValid (q3): break;
+
+if res1:
+  for i in range (100):
+    q = robot.shootRandomConfig ()
+    res1,q4,err = graph.generateTargetConfig ('take-ball-up', q3, q)
+    if res1 and robot.isConfigValid (q4): break;  
+
+if res1:
+  for i in range (100):
+    q = robot.shootRandomConfig ()
+    res,q3,err = graph.generateTargetConfig ('take-ball-up', q4, q)
+    if res and robot.isConfigValid (q3): break;
+    
 if res:
   robot.setCurrentConfig (q3)
   gripperPose = Transform (robot.getJointPosition (gripperName))
