@@ -27,7 +27,7 @@ ps.createTransformationConstraint ('grasp', gripperName, ballName,
 #  Warning the order of the nodes is important. When checking in which node
 #  a configuration lies, node constraints will be checked in the order of node
 #  creation.
-graph.createNode (['grasp', 'ball-above-ground', 'grasp-placement', 'gripper-above-ball', 'placement'])
+graph.createNode (['gripper-above-ball','ball-above-ground','grasp-placement', 'grasp', 'placement'])
 graph.createEdge ('placement', 'placement', 'transit', 1, 'placement')
 graph.createEdge ('grasp', 'grasp', 'transfer', 1, 'grasp')
 #graph.createEdge ('placement', 'grasp', 'grasp-ball', 1, 'placement')
@@ -94,11 +94,11 @@ graph.addConstraints (edge='put-ball-down', constraints = \
 
 # These edges are in node 'grasp'
 #graph.addConstraints (edge='grasp-ball', constraints = Constraints ())
-#graph.addConstraints (edge='move-gripper-up', constraints = Constraints ())
+graph.addConstraints (edge='move-gripper-up', constraints = Constraints ())
 graph.addConstraints (edge='transfer',     constraints = Constraints ())
 graph.addConstraints (edge='move-gripper-up',     constraints = Constraints ())
-#graph.addConstraints (edge='take-ball-up',     constraints = Constraints ())
-#graph.addConstraints (edge='put-ball-down',     constraints = Constraints ())
+graph.addConstraints (edge='take-ball-up',     constraints = Constraints ())
+graph.addConstraints (edge='put-ball-down',     constraints = Constraints ())
 graph.addConstraints (edge='take-ball-away',     constraints = Constraints ())
 
 #graph.addConstraints (edge='release-ball', constraints = Constraints ())
@@ -131,26 +131,8 @@ ps.addGoalConfig (q_goal)
 ## Build relative position of the ball with respect to the gripper
 for i in range (100):
   q = robot.shootRandomConfig ()
-  res1,q4,err = graph.generateTargetConfig ('approach-ball', q_init, q)
-  if res1 and robot.isConfigValid (q4): break;
-
-if res1:
-  for i in range (100):
-    q = robot.shootRandomConfig ()
-    res1,q3,err = graph.generateTargetConfig ('grasp-ball', q4, q)
-    if res1 and robot.isConfigValid (q3): break;
-
-if res1:
-  for i in range (100):
-    q = robot.shootRandomConfig ()
-    res1,q4,err = graph.generateTargetConfig ('take-ball-up', q3, q)
-    if res1 and robot.isConfigValid (q4): break;  
-
-if res1:
-  for i in range (100):
-    q = robot.shootRandomConfig ()
-    res,q3,err = graph.generateTargetConfig ('take-ball-up', q4, q)
-    if res and robot.isConfigValid (q3): break;
+  res1,q3,err = graph.generateTargetConfig ('approach-ball', q_init, q)
+  if res1 and robot.isConfigValid (q3): break;
     
 if res:
   robot.setCurrentConfig (q3)
