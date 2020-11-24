@@ -27,13 +27,14 @@ ps.createTransformationConstraint ('grasp', gripperName, ballName,
 #  Warning the order of the nodes is important. When checking in which node
 #  a configuration lies, node constraints will be checked in the order of node
 #  creation.
-graph.createNode (['gripper-above-ball','ball-above-ground','grasp-placement', 'grasp', 'placement'])
+graph.createNode (['ball-above-ground', 'grasp-placement', 'grasp', 'gripper-above-ball', 'placement'])
 graph.createEdge ('placement', 'placement', 'transit', 1, 'placement')
 graph.createEdge ('grasp', 'grasp', 'transfer', 1, 'grasp')
 #graph.createEdge ('placement', 'grasp', 'grasp-ball', 1, 'placement')
 #graph.createEdge ('grasp', 'placement', 'release-ball', 1, 'grasp')
 
 graph.createEdge ('placement', 'gripper-above-ball', 'approach-ball', 1, 'placement')
+graph.createEdge ('ball-above-ground', 'ball-above-ground', 'move-ball', 1, 'grasp')
 graph.createEdge ('gripper-above-ball', 'placement', 'move-gripper-away', 1, 'placement')
 graph.createEdge ('gripper-above-ball', 'grasp-placement', 'grasp-ball', 1, 'placement')
 graph.createEdge ('grasp-placement', 'gripper-above-ball', 'move-gripper-up', 1, 'placement')
@@ -50,6 +51,10 @@ ps.createTransformationConstraint ('placementBallOnGround', '', ballName,
 ps.createTransformationConstraint ('placementBallAboveGround', '', ballName,
                                    [0, 0, 0.325, 0, 0, 0, 1],
                                    [False, False, True, True, True, False,])
+
+ps.createTransformationConstraint ('placementBallHorizontally', '', ballName,
+                                   [0,0,0.325,0,0,0,1],
+                                   [False, False, True, False, False, False])
 #  Create complement constraint
 ps.createTransformationConstraint ('placement/complement', '', ballName,
                                    [0,0,0.025,0, 0, 0, 1],
@@ -62,6 +67,7 @@ ps.createTransformationConstraint ('gripper-above-ball', gripperName, ballName,
 
 ps.setConstantRightHandSide ('placementBallOnGround', True)
 ps.setConstantRightHandSide ('placementBallAboveGround', True)
+ps.setConstantRightHandSide ('placementBallHorizontally', False)
 ps.setConstantRightHandSide ('placement/complement', False)
 ps.setConstantRightHandSide ('gripper-above-ball', True)
 
@@ -76,6 +82,9 @@ graph.addConstraints (node='grasp-placement', constraints = \
                       Constraints (numConstraints = ['grasp', 'placementBallOnGround']))
 graph.addConstraints (node='ball-above-ground', constraints = \
                       Constraints (numConstraints = ['grasp', 'placementBallAboveGround']))
+
+graph.addConstraints (edge='move-ball', constraints = \
+                      Constraints (numConstraints = ['placementBallHorizontally']))
 
 graph.addConstraints (edge='transit', constraints = \
                       Constraints (numConstraints = ['placement/complement']))
