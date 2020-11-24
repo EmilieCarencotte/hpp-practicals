@@ -51,10 +51,12 @@ ps.createTransformationConstraint ('placementBallOnGround', '', ballName,
 ps.createTransformationConstraint ('placementBallAboveGround', '', ballName,
                                    [0, 0, 0.325, 0, 0, 0, 1],
                                    [False, False, True, True, True, False,])
-
 ps.createTransformationConstraint ('placementBallHorizontally', '', ballName,
                                    [0,0,0.325,0,0,0,1],
                                    [False, False, True, False, False, False])
+ps.createTransformationConstraint ('placementBall', '', ballName,
+                                   [1,1,0.325,0,0,0,1],
+                                   [True, True, False,True,True,True,])
 #  Create complement constraint
 ps.createTransformationConstraint ('placement/complement', '', ballName,
                                    [0,0,0.025,0, 0, 0, 1],
@@ -65,9 +67,10 @@ ps.createTransformationConstraint ('gripper-above-ball', gripperName, ballName,
                                    ballUnderGripper,
                                    [True, True, True, True, True, True])
 
+ps.setConstantRightHandSide ('placementBall', True)
 ps.setConstantRightHandSide ('placementBallOnGround', True)
 ps.setConstantRightHandSide ('placementBallAboveGround', True)
-ps.setConstantRightHandSide ('placementBallHorizontally', False)
+ps.setConstantRightHandSide ('placementBallHorizontally', True)
 ps.setConstantRightHandSide ('placement/complement', False)
 ps.setConstantRightHandSide ('gripper-above-ball', True)
 
@@ -82,6 +85,8 @@ graph.addConstraints (node='grasp-placement', constraints = \
                       Constraints (numConstraints = ['grasp', 'placementBallOnGround']))
 graph.addConstraints (node='ball-above-ground', constraints = \
                       Constraints (numConstraints = ['grasp', 'placementBallAboveGround']))
+#graph.addConstraints (node='ball-placed', constraints = \
+#                      Constraints (numConstraints = ['grasp', 'placementBallAboveGround']))
 
 graph.addConstraints (edge='move-ball', constraints = \
                       Constraints (numConstraints = ['placementBallHorizontally']))
@@ -106,8 +111,6 @@ graph.addConstraints (edge='put-ball-down', constraints = \
 graph.addConstraints (edge='move-gripper-up', constraints = Constraints ())
 graph.addConstraints (edge='transfer',     constraints = Constraints ())
 graph.addConstraints (edge='move-gripper-up',     constraints = Constraints ())
-graph.addConstraints (edge='take-ball-up',     constraints = Constraints ())
-graph.addConstraints (edge='put-ball-down',     constraints = Constraints ())
 graph.addConstraints (edge='take-ball-away',     constraints = Constraints ())
 
 #graph.addConstraints (edge='release-ball', constraints = Constraints ())
