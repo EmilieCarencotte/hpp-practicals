@@ -63,9 +63,6 @@ ps.createTransformationConstraint ('placementBallHorizontally', '', ballName,
 ps.createTransformationConstraint ('placementBall', '', ballName,
                                    [1,1,0.325,0,0,0,1],
                                    [True, True, False,True,True,True,])
-ps.createTransformationConstraint ('placementGripperVertically', gripperName, ballName,
-                                   [0, 0.325, 0, 0.5, 0.5, -0.5, 0.5],
-                                   [True, False, True,False,False,False,])
 #  Create complement constraint
 ps.createTransformationConstraint ('placement/complement', '', ballName,
                                    [0,0,0.025,0, 0, 0, 1],
@@ -80,7 +77,6 @@ ps.setConstantRightHandSide ('placementBall', True)
 ps.setConstantRightHandSide ('placementBallOnGround', True)
 ps.setConstantRightHandSide ('placementBallAboveGround', True)
 ps.setConstantRightHandSide ('placementBallHorizontally', True)
-ps.setConstantRightHandSide ('placementGripperVertically', False)
 ps.setConstantRightHandSide ('placement/complement', False)
 ps.setConstantRightHandSide ('gripper-above-ball', True)
 
