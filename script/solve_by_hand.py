@@ -42,7 +42,9 @@ while not success:
         if not res: break
         paths_qinit.append(pid)
         q_start = qi1
-    if not res: continue
+    if not res: 
+        print("failure")
+        continue
         
     # put the ball in q_goal
     print ("put the ball in q_goal")
@@ -52,12 +54,16 @@ while not success:
         if not res: break
         paths_qgoal.append(pid)
         q_start = qi2
-    if not res: continue
+    if not res: 
+        print("failure")
+        continue
         
     #try to link the two paths
     print ("try to link the paths")
     res,pid,_ = ps.directPath(qi1,qi2,True)
-    if not res: continue
+    if not res: 
+        print("failure")
+        continue
     paths_qinit.append(pid)
     success = True
         
