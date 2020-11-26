@@ -4,6 +4,7 @@ from hpp.corbaserver.manipulation import ConstraintGraph, Constraints
 from hpp.corbaserver import Client
 Client ().problem.resetProblem ()
 from manipulation import robot, ps, vf, Ground, Box, Pokeball, PathPlayer, gripperName, ballName
+import sys
 
 vf.loadEnvironmentModel (Ground, 'ground')
 vf.loadEnvironmentModel (Box, 'box')
@@ -16,6 +17,7 @@ vf.loadObjectModel (Pokeball, 'pokeball')
 robot.setJointBounds ('pokeball/root_joint', [-.4,.4,-.4,.4,-.1,1.,
                                               -1.0001, 1.0001,-1.0001, 1.0001,
                                               -1.0001, 1.0001,-1.0001, 1.0001,])
+
 
 
 q1 = [0, -1.57, 1.57, 0, 0, 0, .3, 0, 0.025, 0, 0, 0, 1]
@@ -58,25 +60,19 @@ ps.createTransformationConstraint ('placementBallOnGround', '', ballName,
                                    [False, False, True, True, True, False,])
 
 ps.createTransformationConstraint ('placementBallAboveGround', '', ballName,
-                                   [0, 0, 0.125, 0, 0, 0, 1],
+                                   [0, 0, 0.225, 0, 0, 0, 1],
                                    [False, False, True, True, True, False,])
-
-ps.createTransformationConstraint ('placementBallHorizontally', '', ballName,
-                                   [0, 0, 0.325, 0, 0, 0, 1],
-                                   [False, False, True, False, False, False])
 
 #  Create complement constraint
 ps.createTransformationConstraint ('placement/complement', '', ballName,
                                    [0, 0, 0.025, 0, 0, 0, 1],
                                    [True, True, False, False, False, True,])
 
-ps.setConstantRightHandSide ('placementBall', True)
 ps.setConstantRightHandSide ('placementBallOnGround', True)
 ps.setConstantRightHandSide ('placementBallAboveGround', True)
 
-ps.setConstantRightHandSide ('placementBallHorizontally', True)
 ps.setConstantRightHandSide ('placement/complement', False)
-ps.setConstantRightHandSide ('placementAboveGround', True)
+ps.setConstantRightHandSide ('placementAboveBall', True)
 
 ## Set constraints of nodes and edges
 graph.addConstraints (node='placement'         , constraints = Constraints (numConstraints = ['placementBallOnGround'],))
@@ -90,13 +86,13 @@ graph.addConstraints (edge='approach-ball'    , constraints = Constraints (numCo
 graph.addConstraints (edge='move-gripper-away', constraints = Constraints (numConstraints = ['placement/complement']))
 graph.addConstraints (edge='move-gripper-up'  , constraints = Constraints (numConstraints = ['placement/complement']))
 graph.addConstraints (edge='grasp-ball'       , constraints = Constraints (numConstraints = ['placement/complement']))
-graph.addConstraints (edge='move-ball'        , constraints = Constraints (numConstraints = ['placementBallHorizontally']))
+graph.addConstraints (edge='take-ball-up'     , constraints = Constraints (numConstraints = ['placement/complement']))
+graph.addConstraints (edge='put-ball-down'    , constraints = Constraints (numConstraints = ['placement/complement']))
 
 # These edges are in node 'grasp'
-graph.addConstraints (edge='transfer'       , constraints = Constraints ())
-graph.addConstraints (edge='take-ball-away' , constraints = Constraints ())
-graph.addConstraints (edge='take-ball-up'   , constraints = Constraints ())
-graph.addConstraints (edge='put-ball-down'  , constraints = Constraints ())
+graph.addConstraints (edge='transfer'      , constraints = Constraints ())
+graph.addConstraints (edge='take-ball-away', constraints = Constraints ())
+graph.addConstraints (edge='move-ball'     , constraints = Constraints ())
 
 #graph.addConstraints (edge='release-ball', constraints = Constraints ())
 ps.selectPathValidation ("Dichotomy", 0)
@@ -139,5 +135,5 @@ def solve():
   print("Solution found, let's display it")
   pp(0)
 
-if('grasp_ball.py' in sys.argv[0]):
+if('grasp_ball_in_box.py' in sys.argv[0]):
   print("execute solve() to resolve and display the path")
