@@ -12,17 +12,8 @@ class MotionPlanner:
     self.ps.addEdgeToRoadmap(q_near, q_new, new_path_id, True);
     list.append(q_new);
 
-  def connectNodes (self, config_list, new_config):
-    for q in config_list:
-      is_valid, path_id, _ = self.ps.directPath(new_config, q, True);
-      if is_valid:
-        self.ps.addEdgeToRoadmap(q, new_config, path_id, True);
-        return;
-      
-    
-
   def solveBiRRT (self, maxIter = float("inf")):
-    print ("Method solveBiRRT is not implemented yet")
+    print ("Begin solver")
     self.ps.prepareSolveStepByStep ()
     finished = False
 
@@ -53,9 +44,6 @@ class MotionPlanner:
         is_valid, path_id, _ = self.ps.directPath(beginConfigs[-1], q, True);
         if is_valid:
           self.ps.addEdgeToRoadmap(beginConfigs[-1], q, path_id, True);
-##      self.connectNodes(endConfigs, beginConfigs[-1])
-##      self.connectNodes(beginConfigs, endConfigs[-1])
-
       
       #### RRT end
       ## Check if the problem is solved.
